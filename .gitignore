@@ -1,0 +1,21 @@
+*.pyc
+*.swp
+*~
+.#*
+\#*
+.DS_Store
+.idea/
+.project
+# Put "--profile" in a file called .rspec to get per-test timing results
+.rspec
+.rvmrc
+.tmp/
+/.vagrant
+/.bundle/
+/.gems/
+/bin/
+/build/
+/tmp/
+/vendor/
+/hieradata/secrets/
+puppet.tgz
