@@ -2,6 +2,16 @@ require 'spec_helper'
 
 describe 'lumberjack::logshipper' do
 
+  let(:pre_condition) { 
+<<eos
+    class { 'lumberjack':
+      host        => 'localhost',
+      deb_source  => 'puppet:///modules/test/files/deb.file',
+      cert_source => 'puppet:///modules/test/files/cert.file',
+    }
+eos
+  }
+
   context 'defaults' do
 
     let (:title) { 'nginx' }
@@ -13,11 +23,9 @@ describe 'lumberjack::logshipper' do
     it {
       should contain_file('/etc/init/nginx-logshipper.conf')
 
-      # FIXME: It can't access the vars from the lumberjack 
-      # class, config_dir comes through as an empty string
-      should contain_file('/nginx-logshipper.json')
+      should contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/paths\":\s\[\s+\"\/var\/log\/nginx\/\*\.log\"/)
-      should_not contain_file('/nginx-logshipper.json')
+      should_not contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/fields/)
 
       should contain_service('nginx-logshipper')
@@ -34,7 +42,7 @@ describe 'lumberjack::logshipper' do
     } }
 
     it {
-      should contain_file('/nginx-logshipper.json')
+      should contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/fields\":\s\{\s+\"type\":\s\"nginx/)
     }
   end
