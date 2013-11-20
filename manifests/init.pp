@@ -1,8 +1,7 @@
 class lumberjack (
-  $host,
+  $hosts,
   $deb_source,
   $cert_source,
-  $port = 5665,
   $config_dir = '/etc/lumberjack',
   $deb_path = '/var/tmp/lumberjack.deb',
   $cert_path = '/etc/ssl/lumberjack.pub',

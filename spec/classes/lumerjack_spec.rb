@@ -4,7 +4,7 @@ describe 'lumberjack' do
 
   context 'defaults' do
     let (:params) { {
-      :host => 'localhost',
+      :hosts => 'localhost',
       :deb_source => 'puppet:///modules/test/deb.file',
       :cert_source => 'puppet:///modules/test/cert.file',
     } }

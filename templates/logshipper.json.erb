@@ -1,6 +1,6 @@
 {
   "network": {
-    "servers": [ "<%= scope['lumberjack::host'] %>:<%= scope['lumberjack::port'] %>" ],
+    "servers": [ <%= scope['lumberjack::hosts'].map { |host| '"' + host + '"' }.join(', ') %> ],
     "ssl ca": "<%= scope['lumberjack::cert_path'] %>"
   },
   "files": [

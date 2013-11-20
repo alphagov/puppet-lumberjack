@@ -5,7 +5,7 @@ describe 'lumberjack::logshipper' do
   let(:pre_condition) { 
 <<eos
     class { 'lumberjack':
-      host        => 'localhost',
+      hosts       => [ 'localhost:4444' ],
       deb_source  => 'puppet:///modules/test/files/deb.file',
       cert_source => 'puppet:///modules/test/files/cert.file',
     }
@@ -23,6 +23,8 @@ eos
     it {
       should contain_file('/etc/init/nginx-logshipper.conf')
 
+      should contain_file('/etc/lumberjack/nginx-logshipper.json')
+        .with_content(/servers\":\s\[\s*\"localhost:4444\"/)
       should contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/paths\":\s\[\s+\"\/var\/log\/nginx\/\*\.log\"/)
       should_not contain_file('/etc/lumberjack/nginx-logshipper.json')
