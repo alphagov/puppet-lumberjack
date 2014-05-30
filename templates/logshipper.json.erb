@@ -1,0 +1,19 @@
+{
+  "network": {
+    "servers": [ <%= scope['lumberjack::hosts'].map { |host| '"' + host + '"' }.join(', ') %> ],
+    "ssl ca": "<%= scope['lumberjack::cert_path'] %>"
+  },
+  "files": [
+    {
+      "paths": [
+        "<%= (@log_files).join("\",\n\t\"") -%>"
+      ]
+
+      <% if @fields.length > 0 %>
+      , "fields": {
+        <%= @fields.map { |k,v| "\"" + k + "\": \"" + v + "\"" }.join(", ") -%>
+      }
+      <% end %>
+    }
+  ]
+}
