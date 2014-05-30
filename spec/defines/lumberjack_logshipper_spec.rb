@@ -22,9 +22,11 @@ eos
 
     it {
       should contain_file('/etc/init/nginx-logshipper.conf')
+        .with_ensure('present')
 
       should contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/servers\":\s\[\s*\"localhost:4444\"/)
+        .with_ensure('present')
       should contain_file('/etc/lumberjack/nginx-logshipper.json')
         .with_content(/paths\":\s\[\s+\"\/var\/log\/nginx\/\*\.log\"/)
       should_not contain_file('/etc/lumberjack/nginx-logshipper.json')
@@ -32,6 +34,28 @@ eos
 
       should contain_service('nginx-logshipper')
         .with({ :ensure => 'running' } )
+    }
+
+  end
+
+  context 'absent' do
+
+    let (:title) { 'nginx' }
+
+    let (:params) { {
+      :log_files => [ '/var/log/nginx/*.log' ],
+      :ensure => 'absent'
+    } }
+
+    it {
+      should contain_file('/etc/init/nginx-logshipper.conf')
+        .with_ensure('absent')
+
+      should contain_file('/etc/lumberjack/nginx-logshipper.json')
+        .with_ensure('absent')
+
+      should contain_service('nginx-logshipper')
+        .with({ :ensure => 'stopped' } )
     }
 
   end
