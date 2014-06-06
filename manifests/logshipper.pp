@@ -11,13 +11,13 @@ define lumberjack::logshipper (
     $service_ensure = 'running'
   }
 
+  $service_name = "${name}-logshipper"
   $upstart_file_path = "/etc/init/${name}-logshipper.conf"
   $config_file_path = "${lumberjack::config_dir}/${name}-logshipper.json"
 
   file { $upstart_file_path :
     ensure => $ensure,
     content => template('lumberjack/logshipper.conf.erb'),
-    notify  => Service["${name}-logshipper"]
   }
 
   file { $config_file_path :
@@ -25,16 +25,22 @@ define lumberjack::logshipper (
     content => template('lumberjack/logshipper.json.erb'),
     require => [
       File[$lumberjack::config_dir],
-      File[$lumberjack::cert_path]
+      File[$lumberjack::cert_path],
     ],
-    notify  => Service["${name}-logshipper"]
   }
 
-  service { "${name}-logshipper":
+  service { $service_name:
     ensure    => $service_ensure,
-    require   => [File[$upstart_file_path], File[$config_file_path]],
-    subscribe => [File[$lumberjack::cert_path]],
-    hasstatus => false
+    hasstatus => false,
   }
 
+  if $ensure == 'present' {
+    File[$upstart_file_path] ~> Service[$service_name]
+    File[$config_file_path] ~> Service[$service_name]
+    File[$lumberjack::cert_path] ~> Service[$service_name]
+  } else {
+    Service[$service_name] -> File[$upstart_file_path]
+    Service[$service_name] -> File[$config_file_path]
+    Service[$service_name] -> File[$lumberjack::cert_path]
+  }
 }
